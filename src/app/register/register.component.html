@@ -1,1 +1,40 @@
-<p>register works!</p>
+<h1>Register</h1>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="field">
+    <label class="label" for="username">Username</label>
+    <input
+      type="text"
+      placeholder="Username"
+      formControlName="username"
+      [class.invalid]="isFieldValid('username')"
+    />
+    @if(isFieldValid('username')) {
+      <span class="error">This field is required.</span>
+    }    
+  </div>
+  <div class="field">
+    <label class="label" for="email">Email</label>
+    <input
+      type="text"
+      placeholder="Email"
+      formControlName="email"
+      [class.invalid]="isFieldValid('username')"
+    />
+    @if(isFieldValid('email')) {
+      <span class="error">This field is required.</span>
+    }
+  </div>
+  <div class="field">
+    <label class="label" for="password">Password</label>
+    <input
+      type="password"
+      placeholder="Password"
+      formControlName="password"
+      [class.invalid]="isFieldValid('password')"
+    />
+    @if(isFieldValid('password')) {
+      <span class="error">This field is required.</span>
+    }
+  </div>
+  <div><button type="submit">Sign Up</button></div>
+</form>
