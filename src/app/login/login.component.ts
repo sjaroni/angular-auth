@@ -17,6 +17,7 @@ export class LoginComponent {
   authService = inject(AuthService);
   router = inject(Router);
   isSubmitted: boolean = false;
+  loginError: string | null = null;
 
   form = this.fb.nonNullable.group({
     username: ['', Validators.required],
@@ -24,7 +25,6 @@ export class LoginComponent {
   });
 
   onSubmit(): void {
-    
     this.isSubmitted = true;
     if (this.form.invalid) {
       return; // Beende die Methode, wenn das Formular ungültig ist
@@ -35,30 +35,23 @@ export class LoginComponent {
         'http://localhost:3000/auth/login',
         this.form.getRawValue()
       )
-      .subscribe((response) => {
-        // // wenn geklappt dann login durchführen und token speichern
-        // // localhost:3000/auth/login (username, password)
-        // let user = this.form.getRawValue();
-        // console.log('response', response);
-        // localStorage.setItem('token', response.token);
-        // localStorage.setItem('refreshToken', response.refreshToken);
-        // console.log(user.username);
-        // // this.authService.currentUserSig.set(user);
-        // this.router.navigateByUrl('/');
+      .subscribe({
+        next: (response) => {
+          const userWithTokens: UserInterface = {
+            ...response,
+            username: this.form.get('username')?.value || '',
+            token: response.token,
+            refreshToken: response.refreshToken,
+          };
 
-        const userWithTokens: UserInterface = {
-      ...response,
-      token: response.token,
-      refreshToken: response.refreshToken,
-    };
-
-    localStorage.setItem('token', response.token);
-    localStorage.setItem('refreshToken', response.refreshToken);
-
-    this.authService.currentUserSig.set(userWithTokens);
-    this.router.navigateByUrl('/');
-
-
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('refreshToken', response.refreshToken);
+          this.authService.currentUserSig.set(userWithTokens);
+          this.router.navigateByUrl('/');
+        },
+        error: (err) => {
+          this.loginError = 'Benutzername oder Passwort ist falsch.';
+        },
       });
   }
 
