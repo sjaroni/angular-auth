@@ -21,7 +21,7 @@ export class AppComponent {
     // send refresh token to backend
     // and get new access token
     this.http
-      .get<{ user: UserInterface }>('http://localhost:3000/auth/refresh-token')
+      .get<{ user: UserInterface }>('http://localhost:3000/auth/check')
       .subscribe({
         next: (response) => {
           console.log('check response', response);
